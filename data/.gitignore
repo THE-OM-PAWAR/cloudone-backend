@@ -1,0 +1,5 @@
+# Ignore all deployment data files
+*.json
+
+# But keep the directory structure
+!.gitignore

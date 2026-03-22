@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Test</title>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>WebSocket Connection Test</h1>
+    <div id="status">Connecting...</div>
+    <div id="messages"></div>
+
+    <script>
+        const socket = io('http://localhost:3000');
+        const statusDiv = document.getElementById('status');
+        const messagesDiv = document.getElementById('messages');
+
+        socket.on('connect', () => {
+            statusDiv.innerHTML = '✅ Connected to server';
+            console.log('Connected to server');
+        });
+
+        socket.on('disconnect', () => {
+            statusDiv.innerHTML = '❌ Disconnected from server';
+            console.log('Disconnected from server');
+        });
+
+        // Listen for deployment events
+        socket.on('deployment:test_deployment_123', (data) => {
+            console.log('Received deployment event:', data);
+            const messageDiv = document.createElement('div');
+            messageDiv.innerHTML = `<strong>${data.event}:</strong> ${JSON.stringify(data.data)}`;
+            messagesDiv.appendChild(messageDiv);
+        });
+
+        // Test sending a message
+        setTimeout(() => {
+            console.log('Testing deployment event...');
+            socket.emit('test-deployment', { deploymentId: 'test_deployment_123' });
+        }, 2000);
+    </script>
+</body>
+</html>
